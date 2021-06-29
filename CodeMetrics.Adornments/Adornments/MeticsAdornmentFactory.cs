@@ -26,7 +26,7 @@ namespace CodeMetrics.Adornments
             var container = ContainerFactory.CreateContainer(exceptionHandler);
 
             var methodsExtractor = container.Resolve<IMethodsExtractor>();
-            var complexityCalculator = container.Resolve<ICyclomaticComplexityCalculator>();
+            var complexityCalculator = container.Resolve<IComplexityCalculator>();
             var view = new MetricsAdornment(textView, methodsExtractor, complexityCalculator);
         }
     }

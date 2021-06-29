@@ -128,10 +128,9 @@
     <Compile Include="IMethodsVisitor.cs" />
     <Compile Include="IMethodsVisitorFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roslyn\IComplexityMetrics.cs" />
     <Compile Include="Roslyn\IConstructorExtractor.cs" />
-    <Compile Include="Roslyn\ICSharpConditionsVisitor.cs" />
     <Compile Include="Roslyn\ICSharpBranchesVisitorFactory.cs" />
-    <Compile Include="Roslyn\ICSharpConditionsVisitorFactory.cs" />
     <Compile Include="Roslyn\IMethodConvertor.cs" />
     <Compile Include="Roslyn\IMethodExtractor.cs" />
     <Compile Include="Roslyn\IMethodTypeResolver.cs" />

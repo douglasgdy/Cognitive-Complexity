@@ -1,7 +1,7 @@
 ﻿namespace CodeMetrics.Parsing.Contracts
 {
-    public interface IBranchesVisitorFactory
+    public interface IBranchesVisitorFactory<out T> where T : IBranchesVisitor
     {
-        IBranchesVisitor Create();
+        T Create();
     }
 }

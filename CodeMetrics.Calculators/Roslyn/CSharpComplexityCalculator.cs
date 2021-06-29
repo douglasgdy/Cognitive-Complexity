@@ -8,58 +8,19 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace CodeMetrics.Calculators.Roslyn
 {
-    public class CSharpComplexityCalculator : ICyclomaticComplexityCalculator
+    public class CSharpComplexityCalculator : ComplexityCalculatorBase
     {
-        private readonly ICSharpBranchesVisitorFactory branchesVisitorFactory;
-        private readonly ICyclomaticComplexityFactory cyclomaticComplexityFactory;
-        private readonly IExceptionHandler exceptionHandler;
-
-        public CSharpComplexityCalculator(ICSharpBranchesVisitorFactory branchesVisitorFactory, ICyclomaticComplexityFactory cyclomaticComplexityFactory, IExceptionHandler exceptionHandler)
+        public CSharpComplexityCalculator(ICSharpBranchesVisitorFactory branchesVisitorFactory, IComplexityFactory complexityFactory, IExceptionHandler exceptionHandler)
+            : base(branchesVisitorFactory, complexityFactory, exceptionHandler)
         {
-            if (branchesVisitorFactory == null) throw new ArgumentNullException(nameof(branchesVisitorFactory));
-            if (cyclomaticComplexityFactory == null) throw new ArgumentNullException(nameof(cyclomaticComplexityFactory));
-            if (exceptionHandler == null) throw new ArgumentNullException(nameof(exceptionHandler));
-
-            this.branchesVisitorFactory = branchesVisitorFactory;
-            this.cyclomaticComplexityFactory = cyclomaticComplexityFactory;
-            this.exceptionHandler = exceptionHandler;
         }
 
-        public ICyclomaticComplexity Calculate(ISyntaxNode syntaxNode)
-        {
-            try
-            {
-                return TryCalculate(syntaxNode);
-            }
-            catch (NullReferenceException nullReferenceException)
-            {
-                exceptionHandler.HandleException(nullReferenceException);
-                return CreateComplexity(1);
-            }
-            catch (Exception ex)
-            {
-                exceptionHandler.HandleException(ex);
-                return CreateComplexity(1);
-            }
-        }
-
-        private static void Visit(IEnumerable<SyntaxNode> blockStatements, ICSharpBranchesVisitor branchesVisitor)
+        private static void AcceptVisitor(IEnumerable<SyntaxNode> blockStatements, ICSharpBranchesVisitor branchesVisitor)
         {
             foreach (var statement in blockStatements)
             {
                 branchesVisitor.Visit(statement);
             }
-        }
-
-        private ICyclomaticComplexity CreateComplexity(IBranchesCounter branchesVisitor)
-        {
-            var complexity = branchesVisitor.Count + 1;
-            return cyclomaticComplexityFactory.Create(complexity);
-        }
-
-        private ICyclomaticComplexity CreateComplexity(int complexity)
-        {
-            return cyclomaticComplexityFactory.Create(complexity);
         }
 
         private static IEnumerable<SyntaxNode> ParseStatements(ISyntaxNodeDeclaration syntaxNode)
@@ -69,12 +30,10 @@ namespace CodeMetrics.Calculators.Roslyn
             return result;
         }
 
-        private ICyclomaticComplexity TryCalculate(ISyntaxNodeDeclaration syntaxNode)
+        protected override void AcceptVisitor(ISyntaxNodeDeclaration syntaxNode, IBranchesVisitor branchesVisitor)
         {
             var blockStatements = ParseStatements(syntaxNode);
-            var branchesVisitor = branchesVisitorFactory.Create();
-            Visit(blockStatements, branchesVisitor);
-            return CreateComplexity(branchesVisitor);
+            AcceptVisitor(blockStatements, (ICSharpBranchesVisitor)branchesVisitor);
         }
     }
 }

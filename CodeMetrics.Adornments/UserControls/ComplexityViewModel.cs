@@ -12,7 +12,7 @@ namespace CodeMetrics.UserControls
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ICyclomaticComplexity complexity;
+        private IComplexity complexity;
 
         private readonly ComplexityToColor converter;
 
@@ -33,7 +33,7 @@ namespace CodeMetrics.UserControls
             PropertyChanged?.Invoke(this, e);
         }
 
-        public void UpdateComplexity(ICyclomaticComplexity complexity)
+        public void UpdateComplexity(IComplexity complexity)
         {
             this.complexity = complexity;
             InvokePropertyChanged(new PropertyChangedEventArgs(null));

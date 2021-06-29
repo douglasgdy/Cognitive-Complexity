@@ -16,12 +16,12 @@ namespace CodeMetrics.Adornments
         private readonly IAdornmentLayer layer;
         private readonly IWpfTextView view;
         private readonly IMethodsExtractor methodsExtractor;
-        private readonly ICyclomaticComplexityCalculator cyclomaticComplexityCalculator;
+        private readonly IComplexityCalculator cyclomaticComplexityCalculator;
         private readonly Options.Options options = new Options.Options();
 
         private Dictionary<ISyntaxNode, ISyntaxNode> syntaxNodes;
 
-        public MetricsAdornment(IWpfTextView view, IMethodsExtractor methodsExtractor, ICyclomaticComplexityCalculator cyclomaticComplexityCalculator)
+        public MetricsAdornment(IWpfTextView view, IMethodsExtractor methodsExtractor, IComplexityCalculator cyclomaticComplexityCalculator)
         {
             if (methodsExtractor == null) throw new ArgumentNullException(nameof(methodsExtractor));
             if (cyclomaticComplexityCalculator == null) throw new ArgumentNullException(nameof(cyclomaticComplexityCalculator));

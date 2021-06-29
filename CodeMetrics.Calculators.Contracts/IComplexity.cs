@@ -1,6 +1,6 @@
 ﻿namespace CodeMetrics.Calculators.Contracts
 {
-    public interface ICyclomaticComplexity
+    public interface IComplexity
     {
         int Value { get; }
     }

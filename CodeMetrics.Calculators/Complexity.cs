@@ -3,7 +3,7 @@ using CodeMetrics.Calculators.Contracts;
 
 namespace CodeMetrics.Calculators
 {
-    public class CyclomaticComplexity : ICyclomaticComplexity, INotifyPropertyChanged
+    public class Complexity : IComplexity, INotifyPropertyChanged
     {
         private int value;
         public int Value
@@ -16,7 +16,7 @@ namespace CodeMetrics.Calculators
             }
         }
 
-        public CyclomaticComplexity(int value)
+        public Complexity(int value)
         {
             Value = value;
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using CodeMetrics.Parsing.Contracts.Roslyn;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,14 +7,14 @@ namespace CodeMetrics.Parsing.Roslyn
 {
     public class CSharpBranchesVisitor : CSharpSyntaxWalker, ICSharpBranchesVisitor
     {
-        private readonly ICSharpConditionsVisitorFactory conditionsVisitorFactory;
-        private readonly Dictionary<string, ExpressionSyntax> declarationsDictionary = new Dictionary<string, ExpressionSyntax>();
+        private readonly IComplexityMetrics complexityMetrics;
 
-        public CSharpBranchesVisitor(ICSharpConditionsVisitorFactory conditionsVisitorFactory)
+        public CSharpBranchesVisitor(IComplexityMetrics complexityMetrics)
         {
-            if (conditionsVisitorFactory == null) throw new ArgumentNullException(nameof(conditionsVisitorFactory));
+            if (complexityMetrics == null) throw new ArgumentNullException(nameof(complexityMetrics));
 
-            this.conditionsVisitorFactory = conditionsVisitorFactory;
+            this.complexityMetrics = complexityMetrics;
+            Count = complexityMetrics.DefaultValue;
         }
 
         public int Count { get; private set; }
@@ -24,150 +22,141 @@ namespace CodeMetrics.Parsing.Roslyn
         public override void VisitBinaryExpression(BinaryExpressionSyntax node)
         {
             base.VisitBinaryExpression(node);
-            if (node.OperatorToken.Kind() != SyntaxKind.QuestionQuestionToken)
-                return;
-            Count += 1;
+
+            //var increment = complexityMetrics.VisitBinaryExpression(node);
+            var increment = complexityMetrics.VisitExpression(node);
+            Count += increment;
         }
 
         public override void VisitConditionalAccessExpression(ConditionalAccessExpressionSyntax node)
         {
             base.VisitConditionalAccessExpression(node);
-            if (node.OperatorToken.Kind() != SyntaxKind.QuestionToken)
-                return;
-            Count++;
+
+            //var increment = complexityMetrics.VisitConditionalAccessExpression(node);
+            var increment = complexityMetrics.VisitExpression(node);
+            Count += increment;
         }
 
         public override void VisitConditionalExpression(ConditionalExpressionSyntax node)
         {
             base.VisitConditionalExpression(node);
-            if (node.QuestionToken.Kind() != SyntaxKind.QuestionToken || node.ColonToken.Kind() != SyntaxKind.ColonToken)
-                return;
-            Count += 2;
+
+            //var increment = complexityMetrics.VisitConditionalExpression(node);
+            var increment = complexityMetrics.VisitExpression(node);
+            Count += increment;
         }
 
         public override void VisitDoStatement(DoStatementSyntax node)
         {
             base.VisitDoStatement(node);
-            Count++;
-            var conditionComplexity = GetConditionComplexity(node.Condition);
-            Count += conditionComplexity;
+
+            var increment = complexityMetrics.VisitDoStatement(node);
+            Count += increment;
+        }
+
+        public override void VisitIfStatement(IfStatementSyntax node)
+        {
+            //complexityMetrics.VisitIfStatementPre(node);
+
+            base.VisitIfStatement(node);
+
+            var increment = complexityMetrics.VisitIfStatement(node);
+            Count += increment;
         }
 
         public override void VisitElseClause(ElseClauseSyntax node)
         {
             base.VisitElseClause(node);
-            Count++;
+
+            var increment = complexityMetrics.VisitElseClause(node);
+            Count += increment;
         }
 
         public override void VisitForEachStatement(ForEachStatementSyntax node)
         {
             base.VisitForEachStatement(node);
-            Count++;
+
+            var increment = complexityMetrics.VisitForEachStatement(node);
+            Count += increment;
         }
 
         public override void VisitForStatement(ForStatementSyntax node)
         {
             base.VisitForStatement(node);
-            Count++;
-            var conditionComplexity = GetConditionComplexity(node.Condition);
-            Count += conditionComplexity;
+
+            var increment = complexityMetrics.VisitForStatement(node);
+            Count += increment;
         }
 
-        public override void VisitIfStatement(IfStatementSyntax node)
-        {
-            base.VisitIfStatement(node);
-            Count++;
+        //public override void VisitInitializerExpression(InitializerExpressionSyntax node)
+        //{
+        //    base.VisitInitializerExpression(node);
 
-            var conditionComplexity = GetConditionComplexity(node.Condition);
-            Count += conditionComplexity;
-        }
-
-        public override void VisitInitializerExpression(InitializerExpressionSyntax node)
-        {
-            base.VisitInitializerExpression(node);
-            //var binaryExpressions = node?.DescendantNodes()?.OfType<BinaryExpressionSyntax>();
-            //if (binaryExpressions != null && binaryExpressions.Any())
-            //{
-            //    Count++;
-            //    foreach (var binaryExpression in binaryExpressions)
-            //    {
-            //        var conditionComplexity = GetConditionComplexity(binaryExpression);
-            //        Count += conditionComplexity;
-            //    }
-            //}
-        }
+        //    var increment = complexityMetrics.VisitInitializerExpression(node);
+        //    Count += increment;
+        //}
 
         public override void VisitReturnStatement(ReturnStatementSyntax node)
         {
             base.VisitReturnStatement(node);
-            var binaryExpressionSyntax = node.Expression as BinaryExpressionSyntax;
-            if (binaryExpressionSyntax == null) return;
 
-            Count++;
-            var conditionComplexity = GetConditionComplexity(binaryExpressionSyntax);
-            Count += conditionComplexity;
+            var increment = complexityMetrics.VisitReturnStatement(node);
+            Count += increment;
+        }
+
+        public override void VisitSwitchStatement(SwitchStatementSyntax node)
+        {
+            base.VisitSwitchStatement(node);
+
+            var increment = complexityMetrics.VisitSwitchStatement(node);
+            Count += increment;
         }
 
         public override void VisitSwitchSection(SwitchSectionSyntax node)
         {
             base.VisitSwitchSection(node);
-            if (!IsDefaultCase(node))
-            {
-                Count++;
-            }
+
+            var increment = complexityMetrics.VisitSwitchSection(node);
+            Count += increment;
         }
 
         public override void VisitTryStatement(TryStatementSyntax node)
         {
             base.VisitTryStatement(node);
-            Count += node.Catches.Count;
+
+            var increment = complexityMetrics.VisitTryStatement(node);
+            Count += increment;
         }
 
-        public override void VisitVariableDeclaration(VariableDeclarationSyntax node)
-        {
-            base.VisitVariableDeclaration(node);
+        //public override void VisitVariableDeclaration(VariableDeclarationSyntax node)
+        //{
+        //    base.VisitVariableDeclaration(node);
 
-            InitDeclarationsDictionary(node);
-        }
+        //    //complexityMetrics.VisitVariableDeclaration(node);
+        //}
 
         public override void VisitWhileStatement(WhileStatementSyntax node)
         {
             base.VisitWhileStatement(node);
-            Count++;
-            var conditionComplexity = GetConditionComplexity(node.Condition);
-            Count += conditionComplexity;
+
+            var increment = complexityMetrics.VisitWhileStatement(node);
+            Count += increment;
         }
 
-        private static bool IsDefaultCase(SwitchSectionSyntax switchSection)
+        public override void VisitGotoStatement(GotoStatementSyntax node)
         {
-            var firstCaseLabel = switchSection.Labels.OfType<DefaultSwitchLabelSyntax>().FirstOrDefault();
-            return firstCaseLabel != null;
+            base.VisitGotoStatement(node);
+
+            var increment = complexityMetrics.VisitGotoStatement(node);
+            Count += increment;
         }
 
-        private ICSharpConditionsVisitor CreateConditionsVisitor()
+        public override void VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            return conditionsVisitorFactory.Create(declarationsDictionary);
-        }
+            base.VisitInvocationExpression(node);
 
-        private int GetConditionComplexity(Microsoft.CodeAnalysis.SyntaxNode node)
-        {
-            var conditionsVisitor = CreateConditionsVisitor();
-            conditionsVisitor.Visit(node);
-            return conditionsVisitor.Count;
-        }
-
-        private void InitDeclarationsDictionary(VariableDeclarationSyntax variableDeclaration)
-        {
-            if (variableDeclaration?.Variables == null) return;
-
-            foreach (var variable in variableDeclaration.Variables)
-            {
-                var binaryExpressionSyntax = variable.Initializer?.DescendantNodes().OfType<BinaryExpressionSyntax>().FirstOrDefault();
-                if (binaryExpressionSyntax != null)
-                {
-                    declarationsDictionary[variable.Identifier.Text] = binaryExpressionSyntax;
-                }
-            }
+            var increment = complexityMetrics.VisitInvocationExpression(node);
+            Count += increment;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace CodeMetrics.Parsing.Contracts.Roslyn
 {
-    public interface ICSharpConditionsVisitor : IBranchesVisitor
+    public interface ICSharpConditionsVisitor : IConditionsVisitor//IBranchesVisitor
     {
         void Visit(SyntaxNode node);
     }

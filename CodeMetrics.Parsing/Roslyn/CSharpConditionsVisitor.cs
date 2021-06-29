@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using CodeMetrics.Parsing.Contracts.Roslyn;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,15 +7,17 @@ namespace CodeMetrics.Parsing.Roslyn
 {
     public class CSharpConditionsVisitor : CSharpSyntaxWalker, ICSharpConditionsVisitor
     {
-        private readonly IDictionary<string, ExpressionSyntax> declarationsDictionary;
+        private readonly IComplexityMetrics complexityMetrics;
 
         public CSharpConditionsVisitor()
         {
         }
 
-        public CSharpConditionsVisitor(IDictionary<string, ExpressionSyntax> declarationDictionary)
+        public CSharpConditionsVisitor(IComplexityMetrics complexityMetrics)
         {
-            declarationsDictionary = declarationDictionary;
+            if (complexityMetrics == null) throw new ArgumentNullException(nameof(complexityMetrics));
+
+            this.complexityMetrics = complexityMetrics;
         }
 
         public int Count { get; private set; }
@@ -24,29 +26,34 @@ namespace CodeMetrics.Parsing.Roslyn
         {
             base.VisitBinaryExpression(node);
 
-            switch (node.Kind())
-            {
-                case SyntaxKind.LogicalOrExpression:
-                case SyntaxKind.LogicalAndExpression:
-                    ++Count;
-                    break;
+            //var increment = complexityMetrics.VisitBinaryExpression(node);
+            //Count += increment;
 
-                case SyntaxKind.CoalesceExpression:
-                    Count += 1;
-                    break;
-            }
+            //switch (node.Kind())
+            //{
+            //    case SyntaxKind.LogicalOrExpression:
+            //    case SyntaxKind.LogicalAndExpression:
+            //        ++Count;
+            //        break;
+
+            //    case SyntaxKind.CoalesceExpression:
+            //        Count += 1;
+            //        break;
+            //}
         }
 
         public override void VisitIdentifierName(IdentifierNameSyntax node)
         {
             base.VisitIdentifierName(node);
 
-            var identifierName = node.Identifier.Text;
-            if (declarationsDictionary.ContainsKey(identifierName))
-            {
-                var expressionSyntaxNode = declarationsDictionary[identifierName];
-                Visit(expressionSyntaxNode);
-            }
+            //complexityMetrics.VisitIdentifierName(node);
+
+            //var identifierName = node.Identifier.Text;
+            //if (declarationsDictionary.ContainsKey(identifierName))
+            //{
+            //    var expressionSyntaxNode = declarationsDictionary[identifierName];
+            //    Visit(expressionSyntaxNode);
+            //}
         }
     }
 }

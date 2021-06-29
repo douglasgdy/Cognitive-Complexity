@@ -115,7 +115,9 @@
     <Compile Include="Property.cs" />
     <Compile Include="PropertyAccessor.cs" />
     <Compile Include="PropertyDeclaration.cs" />
+    <Compile Include="Roslyn\CognitiveComplexityMetrics.cs" />
     <Compile Include="Roslyn\ConstructorExtractor.cs" />
+    <Compile Include="Roslyn\CyclomaticComplexityMetrics.cs" />
     <Compile Include="Roslyn\InvocationExpressionPropertyTypeConvertor.cs" />
     <Compile Include="Roslyn\InvocationExpressionPropertyTypeResolvingRule.cs" />
     <Compile Include="Roslyn\DeclarationPropertyTypeConvertor.cs" />
@@ -133,7 +135,6 @@
     <Compile Include="Roslyn\MethodExtractor.cs" />
     <Compile Include="Roslyn\MethodTypeResolver.cs" />
     <Compile Include="Roslyn\CSharpMethodsExtractor.cs" />
-    <Compile Include="Roslyn\CSharpConditionsVisitor.cs" />
     <Compile Include="Roslyn\PropertyAccessorExtractor.cs" />
     <Compile Include="Roslyn\PropertyExtractor.cs" />
     <Compile Include="Roslyn\PropertyTypeResolver.cs" />

@@ -71,12 +71,10 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ICyclomaticComplexity.cs" />
-    <Compile Include="ICyclomaticComplexityCalculator.cs" />
-    <Compile Include="ICyclomaticComplexityCalculatorFactory.cs" />
-    <Compile Include="ICyclomaticComplexityFactory.cs" />
-    <Compile Include="NRefactory\IAstCyclomaticComplexityCalculator.cs" />
-    <Compile Include="NRefactory\IAstCyclomaticComplexityCalculatorFactory.cs" />
+    <Compile Include="IComplexity.cs" />
+    <Compile Include="IComplexityCalculator.cs" />
+    <Compile Include="IComplexityCalculatorFactory.cs" />
+    <Compile Include="IComplexityFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

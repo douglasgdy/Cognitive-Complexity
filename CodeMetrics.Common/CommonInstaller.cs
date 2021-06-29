@@ -13,8 +13,8 @@ namespace CodeMetrics.Common
     {
         public override void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Register(Component.For<IBranchesVisitorFactory>().AsFactory());
-            container.Register(Component.For<IConditionsVisitorFactory>().AsFactory());
+            //container.Register(Component.For<IBranchesVisitorFactory>().AsFactory());
+            //container.Register(Component.For<IConditionsVisitorFactory>().AsFactory());
             container.Register(Component.For<IConstructorFactory>().AsFactory());
             container.Register(Component.For<ILocationFactory>().AsFactory());
             container.Register(Component.For<IMethodFactory>().AsFactory());
@@ -24,8 +24,8 @@ namespace CodeMetrics.Common
             container.Register(Component.For<IPropertyDeclarationFactory>().AsFactory());
             container.Register(Component.For<IMethodsExtractorFactory>().AsFactory());
             container.Register(Component.For<IMethodsVisitorFactory>().AsFactory());
-            container.Register(Component.For<ICyclomaticComplexityFactory>().AsFactory());
-            container.Register(Component.For<ICyclomaticComplexityCalculatorFactory>().AsFactory());
+            container.Register(Component.For<IComplexityFactory>().AsFactory());
+            container.Register(Component.For<IComplexityCalculatorFactory>().AsFactory());
 
             container.Register(Component.For<IUnderlyingObject>().ImplementedBy<UnderlyingObject>().LifeStyle.Transient);
             container.Register(Component.For<IUnderlyingObjectFactory>().ImplementedBy<UnderlyingObjectFactory>().LifeStyle.Singleton);
@@ -36,7 +36,7 @@ namespace CodeMetrics.Common
             container.Register(Component.For<IPropertyAccessor>().ImplementedBy<PropertyAccessor>().LifeStyle.Transient);
             container.Register(Component.For<IMethodDeclaration>().ImplementedBy<MethodDeclaration>().LifeStyle.Transient);
             container.Register(Component.For<IPropertyDeclaration>().ImplementedBy<PropertyDeclaration>().LifeStyle.Transient);
-            container.Register(Component.For<ICyclomaticComplexity>().ImplementedBy<CyclomaticComplexity>().LifeStyle.Transient);
+            container.Register(Component.For<IComplexity>().ImplementedBy<Complexity>().LifeStyle.Transient);
         }
     }
 }
